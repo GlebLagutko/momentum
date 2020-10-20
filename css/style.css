@@ -1,0 +1,88 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    font-size: 10px;
+}
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    background-size: cover;
+    color: #000000;
+}
+
+.date {
+    font-size: 9rem;
+}
+
+.time {
+    font-size: 7rem;
+}
+
+h1 {
+    margin-bottom: 3rem;
+}
+
+h2 {
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.weather {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+}
+
+.btn {
+    color: white;
+    font-size: 15px;
+    width: 60px;
+    height: 60px;
+    border: 0;
+    background: none;
+    filter: grayscale(1);
+    margin: 10px;
+}
+
+.btn:hover {
+    filter: grayscale(.8);
+    cursor: pointer;
+
+}
+
+.btn:active,
+.btn:focus {
+    outline: 0;
+}
+
+.btn:active {
+    transform: scale(1.02)
+}
+
+@media (max-width: 720px) {
+    .date {
+        font-size: 5rem;
+    }
+
+    .time {
+        font-size: 4rem;
+    }
+
+    .greeting {
+        font-size: 3rem;
+    }
+
+    .name {
+        font-size: 3rem;
+    }
+}
