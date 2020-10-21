@@ -6,30 +6,45 @@
     <meta http-equiv="X-UA-Compitable" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/owfont-regular.css">
+
     <title>Momentum</title>
+
 
 </head>
 <body>
 <div class="weather">
+    <label>
+        <input class="input-weather" value="Minsk">
+    </label>
     <i class="weather-icon owf"></i>
     <div class="temperature"></div>
     <div class="wind"></div>
     <div class="humidity"></div>
     <div class="weather-description"></div>
 </div>
+<figure class="quote">
+    <blockquote>
+
+    </blockquote>
+    <figcaption>
+    </figcaption>
+</figure>
 
 <time class="date"></time>
 <time class="time"></time>
-
-<h1>
-    <span class="greeting"></span>
-    <span class="name" contenteditable="true"></span>
-</h1>
+<div class="greeting-div">
+    <h1>
+        <span class="greeting"></span>
+    </h1>
+    <h1 class="name" contenteditable="true"></h1>
+</div>
 <h2>What Is Your Focus For Today?</h2>
 <h2 class="focus" contenteditable="true"></h2>
 
-
-<button class="btn">Next image</button>
+<div class="button-div">
+    <button class="btn">Next image</button>
+    <button class="btn-quote">Next quote</button>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

@@ -9,7 +9,12 @@ const wind = document.querySelector('.wind');
 const humidity = document.querySelector('.humidity');
 const weatherDescription = document.querySelector('.weather-description');
 const btnImg = document.querySelector('.btn');
-let changeImgWithBtn = false;
+const weatherLabel = document.querySelector('.input-weather');
+const blockquote = document.querySelector('blockquote');
+const figcaption = document.querySelector('figcaption');
+const btnQuote = document.querySelector('.btn-quote');
+let previousCity = '';
+
 
 const daysOfTheWeek = {
     0: 'Sunday',
@@ -41,9 +46,10 @@ const baseMorning = 'https://raw.githubusercontent.com/irinainina/ready-projects
 const baseAfternoon = 'https://raw.githubusercontent.com/irinainina/ready-projects/momentum/momentum/assets/images/day/'
 const baseEvening = 'https://raw.githubusercontent.com/irinainina/ready-projects/momentum/momentum/assets/images/evening/'
 const baseNight = 'https://raw.githubusercontent.com/irinainina/ready-projects/momentum/momentum/assets/images/night/'
-const images = ['01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg'];
+const images = ['07.jpg', '08.jpg', '09.jpg', '10.jpg', '05.jpg', '06.jpg'];
 let allImages = [];
 let previousHour = -1;
+let i = 0;
 
 function showDate() {
     let today = new Date(),
@@ -88,25 +94,28 @@ function shuffleImages() {
     shuffle(images);
     allImages = [];
     for (const image of images) {
-        allImages.push(`${baseMorning}image`);
+        allImages.push(`${baseNight}${image}`);
     }
     for (const image of images) {
-        allImages.push(`${baseAfternoon}image`);
+        allImages.push(`${baseMorning}${image}`);
     }
     for (const image of images) {
-        allImages.push(`${baseEvening}image`);
+        allImages.push(`${baseAfternoon}${image}`);
     }
     for (const image of images) {
-        allImages.push(`${baseNight}image`);
+        allImages.push(`${baseEvening}${image}`);
     }
+
 }
 
 
 function setBgGreet() {
     let today = new Date(),
         hour = today.getHours();
-    shuffleImages();
+
     if (previousHour - hour !== 0) {
+        shuffleImages();
+        i = hour + 1;
         if (hour < 12 && hour >= 6) {
             let number = hour - 6;
             document.body.style.backgroundImage =
@@ -153,11 +162,21 @@ function setName(e) {
     if (e.type === 'keypress') {
         // Make sure enter is pressed
         if (e.which === 13 || e.keyCode === 13) {
-            localStorage.setItem('name', e.target.innerText);
+            if (Boolean(e.target.innerText.trim())) {
+                localStorage.setItem('name', e.target.innerText);
+            } else {
+                e.target.textContent = localStorage.getItem('name');
+            }
             name.blur();
         }
     } else {
-        localStorage.setItem('name', e.target.innerText);
+        if (Boolean(e.target.innerText.trim())) {
+            localStorage.setItem('name', e.target.innerText);
+        } else {
+            e.target.textContent = localStorage.getItem('name');
+        }
+
+
     }
 }
 
@@ -165,6 +184,7 @@ function setName(e) {
 function getFocus() {
     if (localStorage.getItem('focus') === null || localStorage.getItem('focus') === '') {
         focus.textContent = '[Enter Focus]';
+        localStorage.setItem('focus', '[Enter Focus]');
     } else {
         focus.textContent = localStorage.getItem('focus');
     }
@@ -174,53 +194,120 @@ function getFocus() {
 function setFocus(e) {
     if (e.type === 'keypress') {
         if (e.which === 13 || e.keyCode === 13) {
-            localStorage.setItem('focus', e.target.innerText);
+            if (Boolean(e.target.innerText.trim())) {
+                localStorage.setItem('focus', e.target.innerText);
+            } else {
+                e.target.textContent = localStorage.getItem('focus');
+            }
             focus.blur();
+
         }
     } else {
-        localStorage.setItem('focus', e.target.innerText);
+        if (Boolean(e.target.innerText.trim())) {
+            localStorage.setItem('focus', e.target.innerText);
+        } else {
+            e.target.textContent = localStorage.getItem('focus');
+        }
+
+    }
+}
+
+async function setCity(e) {
+    if (e.type === 'keypress') {
+        if (e.which === 13 || e.keyCode === 13) {
+            if (Boolean(e.target.value.trim())) {
+                previousCity = localStorage.getItem('city');
+                localStorage.setItem('city', e.target.value);
+                getWeather();
+            } else {
+                weatherLabel.value = localStorage.getItem('city');
+            }
+            weatherLabel.blur();
+        }
+    } else {
+        if (Boolean(e.target.value.trim())) {
+            previousCity = localStorage.getItem('city');
+            localStorage.setItem('city', e.target.value);
+            getWeather();
+        } else {
+            weatherLabel.value = localStorage.getItem('city');
+        }
     }
 }
 
 async function getWeather() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=Barcelona&lang=en&appid=da9c9689fa19ac3ed3a29bbd3670acdc&units=metric`;
-    const res = await fetch(url);
-    const data = await res.json();
-    console.log(data);
-    weatherIcon.classList.add(`owf-${data.weather[0].id}`);
-    temperature.textContent = `${data.main.temp}°C`;
-    wind.textContent = `${data.wind.speed} m/s`;
-    humidity.textContent = `${data.main.humidity} %`;
-    weatherDescription.textContent = data.weather[0].description;
+    if (localStorage.getItem('city') === null || localStorage.getItem('city') === '') {
+        localStorage.setItem('city', 'Minsk');
+    }
 
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${localStorage.getItem('city') || 'Minsk'}&lang=en&appid=da9c9689fa19ac3ed3a29bbd3670acdc&units=metric`;
+    const res = await fetch(url);
+    if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+        weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+        weatherLabel.value = localStorage.getItem('city');
+        temperature.textContent = `${data.main.temp}°C`;
+        wind.textContent = `${data.wind.speed} m/s`;
+        humidity.textContent = `${data.main.humidity} %`;
+        weatherDescription.textContent = data.weather[0].description;
+    } else {
+        alert('Wrong name of city');
+        weatherLabel.value = previousCity;
+        localStorage.setItem('city', previousCity);
+    }
 }
 
 function viewBgImage(data) {
-    const body = document.querySelector('body');
     const src = data;
     const img = document.createElement('img');
     img.src = src;
     img.onload = () => {
-        body.style.backgroundImage = `url(${src})`;
+        document.body.style.backgroundImage = `url(${src})`;
     };
+
+
 }
 
 function getImage() {
-    const index = i % images.length;
-    const imageSrc = base + images[index];
+    let index = -1;
+    if (i < 24) {
+        index = i++;
+    } else {
+        i -= 24;
+        index = i++;
+    }
+    const imageSrc = allImages[index];
     viewBgImage(imageSrc);
-    i++;
-    btn.disabled = true;
+
+    btnImg.disabled = true;
     setTimeout(function () {
         btnImg.disabled = false
     }, 1000);
 }
 
+async function getQuote() {
+    const url = `https://cors-anywhere.herokuapp.com/https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en`;
+    const res = await fetch(url);
+    const data = await res.json();
+    blockquote.textContent = data.quoteText;
+    figcaption.textContent = data.quoteAuthor;
+}
+
+
+document.addEventListener('DOMContentLoaded', getQuote);
+btnQuote.addEventListener('click', getQuote);
 btnImg.addEventListener('click', getImage);
 name.addEventListener('keypress', setName);
 name.addEventListener('blur', setName);
+name.addEventListener('click', () => name.textContent = '');
 focus.addEventListener('keypress', setFocus);
 focus.addEventListener('blur', setFocus);
+focus.addEventListener('click', () => focus.textContent = '');
+weatherLabel.addEventListener('blur', () => weatherLabel.value = localStorage.getItem('city'));
+weatherLabel.addEventListener('keypress', setCity);
+weatherLabel.addEventListener('click', () => weatherLabel.value = '')
+
 
 getWeather();
 showTime();
